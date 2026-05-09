@@ -329,7 +329,10 @@ h3 { font-family: var(--serif); font-size: clamp(18px,2.5vw,22px); font-weight: 
 .product-card-price { font-family: var(--serif); font-size: 30px; }
 .product-card-actions { display: flex; align-items: center; gap: 14px; margin-top: 18px; }
 .product-card-actions .btn-primary { flex: 1; }
-.product-card:last-of-type { grid-column: 1 / -1; }
+.product-card:nth-child(5) {
+  grid-column: 1 / -1;
+  border-bottom: 1px solid var(--navy-700);
+}
 
 /* ── Bundle card ── */
 .bundle-card {
