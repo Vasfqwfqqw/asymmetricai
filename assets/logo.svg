@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="48" viewBox="0 0 200 48" role="img">
+  <title>Asymmetric AI</title>
+  <path d="M 8 42 L 27 6 L 46 42" fill="none" stroke="#D4943A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 19 42 L 36 12 L 53 42" fill="none" stroke="rgba(255,255,255,0.88)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text font-family="Georgia, 'Times New Roman', serif" font-size="15" letter-spacing="1.5" font-weight="normal">
+    <tspan x="66" y="28" fill="#FFFFFF">Asymmetric</tspan><tspan fill="#D4943A"> AI</tspan>
+  </text>
+</svg>

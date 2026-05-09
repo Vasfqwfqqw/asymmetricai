@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# Excluded source/standalone files
+_standalone-source.html
+Asymmetric AI - Homepage (standalone).html
+
+# Excluded assets
+assets/mark.svg
