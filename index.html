@@ -77,13 +77,209 @@
   <!-- ============ PUZZLE ANIMATION ============ -->
   <section class="anim-section" aria-label="How it works animation">
     <div class="anim-canvas-wrap">
-      <canvas id="puzzle-canvas" width="960" height="480" aria-hidden="true"></canvas>
+      <canvas id="puzzle-canvas" aria-hidden="true"></canvas>
     </div>
     <div class="anim-caption">
       <span class="label">How it works</span>
       <h2>Five packs. One complete finance perspective.</h2>
       <p>Each pack targets a specific stage of the upgrade or migration. Buy individually as your project progresses, or get all five as a bundle and save £50.</p>
     </div>
+    <script>
+    (function () {
+      var canvas = document.getElementById('puzzle-canvas');
+      if (!canvas) return;
+      var obs = new IntersectionObserver(function (entries) {
+        if (!entries[0].isIntersecting) return;
+        obs.disconnect();
+        var s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js';
+        s.onload = initGraph;
+        document.head.appendChild(s);
+      }, { rootMargin: '200px' });
+      obs.observe(canvas);
+
+      function initGraph() {
+        var ctx = canvas.getContext('2d');
+        var W, H;
+
+        function resize() {
+          W = canvas.parentElement.offsetWidth;
+          H = 480;
+          canvas.width = W;
+          canvas.height = H;
+        }
+        resize();
+        window.addEventListener('resize', function () {
+          resize();
+          sim.force('center', d3.forceCenter(W / 2, H / 2));
+          sim.alpha(0.3).restart();
+        });
+
+        var nodes = [
+          { id: 'S/4HANA', r: 7 },
+          { id: 'Finance Readiness', r: 7 },
+          { id: 'Universal Journal', r: 7 },
+          { id: 'Month-End Close', r: 7 },
+          { id: 'Management Reporting', r: 7 },
+          { id: 'RISE with SAP', r: 7 },
+          { id: 'Go-Live', r: 7 },
+          { id: 'Data Quality', r: 5 },
+          { id: 'Chart of Accounts', r: 5 },
+          { id: 'Fixed Assets', r: 5 },
+          { id: 'Parallel Ledgers', r: 5 },
+          { id: 'AR & AP', r: 5 },
+          { id: 'Intercompany', r: 5 },
+          { id: 'Profit Centre', r: 5 },
+          { id: 'Audit & Compliance', r: 5 },
+          { id: 'Legacy Risk', r: 5 },
+          { id: 'Migration', r: 5 },
+          { id: 'Cost Centre', r: 5 },
+          { id: 'Finance Director', r: 3 },
+          { id: 'Controller', r: 3 },
+          { id: 'Cash Collection', r: 3 },
+          { id: 'Group Reporting', r: 3 },
+          { id: 'Board Report', r: 3 },
+          { id: 'IT Teams', r: 3 },
+          { id: 'Bad Debt', r: 3 },
+          { id: 'Close Cycle', r: 3 }
+        ];
+
+        var links = [
+          { source: 'S/4HANA', target: 'Finance Readiness' },
+          { source: 'S/4HANA', target: 'Universal Journal' },
+          { source: 'S/4HANA', target: 'RISE with SAP' },
+          { source: 'S/4HANA', target: 'Migration' },
+          { source: 'S/4HANA', target: 'Go-Live' },
+          { source: 'S/4HANA', target: 'Legacy Risk' },
+          { source: 'Finance Readiness', target: 'Data Quality' },
+          { source: 'Finance Readiness', target: 'Chart of Accounts' },
+          { source: 'Finance Readiness', target: 'Finance Director' },
+          { source: 'Finance Readiness', target: 'Controller' },
+          { source: 'Universal Journal', target: 'Parallel Ledgers' },
+          { source: 'Universal Journal', target: 'Month-End Close' },
+          { source: 'Universal Journal', target: 'Chart of Accounts' },
+          { source: 'Universal Journal', target: 'Intercompany' },
+          { source: 'Data Quality', target: 'Legacy Risk' },
+          { source: 'Data Quality', target: 'Migration' },
+          { source: 'Month-End Close', target: 'Close Cycle' },
+          { source: 'Month-End Close', target: 'Management Reporting' },
+          { source: 'Month-End Close', target: 'Fixed Assets' },
+          { source: 'Month-End Close', target: 'AR & AP' },
+          { source: 'Management Reporting', target: 'Group Reporting' },
+          { source: 'Management Reporting', target: 'Board Report' },
+          { source: 'Management Reporting', target: 'Profit Centre' },
+          { source: 'Management Reporting', target: 'Cost Centre' },
+          { source: 'Fixed Assets', target: 'Parallel Ledgers' },
+          { source: 'Fixed Assets', target: 'Audit & Compliance' },
+          { source: 'Parallel Ledgers', target: 'Intercompany' },
+          { source: 'AR & AP', target: 'Cash Collection' },
+          { source: 'AR & AP', target: 'Bad Debt' },
+          { source: 'AR & AP', target: 'Intercompany' },
+          { source: 'Intercompany', target: 'Profit Centre' },
+          { source: 'Profit Centre', target: 'Cost Centre' },
+          { source: 'RISE with SAP', target: 'Go-Live' },
+          { source: 'RISE with SAP', target: 'Migration' },
+          { source: 'RISE with SAP', target: 'IT Teams' },
+          { source: 'Audit & Compliance', target: 'Finance Director' },
+          { source: 'Audit & Compliance', target: 'Controller' },
+          { source: 'Go-Live', target: 'IT Teams' },
+          { source: 'Go-Live', target: 'Legacy Risk' },
+          { source: 'Migration', target: 'IT Teams' },
+          { source: 'Finance Director', target: 'Board Report' },
+          { source: 'Controller', target: 'Close Cycle' },
+          { source: 'Cash Collection', target: 'Bad Debt' },
+          { source: 'Group Reporting', target: 'Board Report' }
+        ];
+
+        links.forEach(function (l) { l.dist = 70 + Math.random() * 30; });
+
+        var adj = {};
+        nodes.forEach(function (n) { adj[n.id] = new Set(); });
+        links.forEach(function (l) {
+          adj[l.source].add(l.target);
+          adj[l.target].add(l.source);
+        });
+
+        nodes.forEach(function (n) { n.op = 1; n.sc = 1; });
+        links.forEach(function (l) { l.op = 0.15; });
+
+        var hov = null;
+
+        var sim = d3.forceSimulation(nodes)
+          .force('link', d3.forceLink(links).id(function (d) { return d.id; })
+            .distance(function (d) { return d.dist; }).strength(0.4))
+          .force('charge', d3.forceManyBody().strength(-180))
+          .force('collide', d3.forceCollide().radius(function (d) { return d.r + 22; }))
+          .force('center', d3.forceCenter(W / 2, H / 2))
+          .on('tick', draw)
+          .on('end', function () { sim.alpha(0.04).restart(); });
+
+        function lerp(a, b, t) { return a + (b - a) * t; }
+
+        function draw() {
+          if (sim.alpha() < 0.04) sim.alpha(0.04);
+          ctx.clearRect(0, 0, W, H);
+          ctx.fillStyle = '#0A1628';
+          ctx.fillRect(0, 0, W, H);
+
+          links.forEach(function (l) {
+            var conn = hov !== null && (l.source.id === hov || l.target.id === hov);
+            var tOp = hov === null ? 0.15 : conn ? 0.65 : 0.03;
+            l.op = lerp(l.op, tOp, 0.12);
+            ctx.beginPath();
+            ctx.moveTo(l.source.x, l.source.y);
+            ctx.lineTo(l.target.x, l.target.y);
+            ctx.strokeStyle = 'rgba(255,255,255,' + l.op.toFixed(3) + ')';
+            ctx.lineWidth = 0.7;
+            ctx.stroke();
+          });
+
+          nodes.forEach(function (n) {
+            var isH = n.id === hov;
+            var isCon = hov !== null && adj[hov].has(n.id);
+            n.op = lerp(n.op, hov === null ? 1 : isH || isCon ? 1 : 0.2, 0.12);
+            n.sc = lerp(n.sc, isH ? 1.4 : 1, 0.12);
+            var r = n.r * n.sc;
+            var g = ctx.createRadialGradient(n.x, n.y, r * 0.3, n.x, n.y, r * 4);
+            g.addColorStop(0, 'rgba(245,158,11,' + (n.op * 0.4).toFixed(3) + ')');
+            g.addColorStop(1, 'rgba(245,158,11,0)');
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, r * 4, 0, Math.PI * 2);
+            ctx.fillStyle = g;
+            ctx.fill();
+          });
+
+          nodes.forEach(function (n) {
+            var r = n.r * n.sc;
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+            ctx.fillStyle = (n.id === hov ? 'rgba(252,211,77,' : 'rgba(245,158,11,') + n.op.toFixed(3) + ')';
+            ctx.fill();
+            var fs = n.r === 7 ? 10.5 : n.r === 5 ? 9.5 : 8.5;
+            ctx.font = fs + 'px system-ui,sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'rgba(255,255,255,' + n.op.toFixed(3) + ')';
+            ctx.fillText(n.id, n.x, n.y + r + fs + 2);
+          });
+        }
+
+        canvas.addEventListener('mousemove', function (e) {
+          var rect = canvas.getBoundingClientRect();
+          var sx = W / rect.width, sy = H / rect.height;
+          var mx = (e.clientX - rect.left) * sx;
+          var my = (e.clientY - rect.top) * sy;
+          var near = null, minD = 80;
+          nodes.forEach(function (n) {
+            var d = Math.hypot(n.x - mx, n.y - my);
+            if (d < minD) { minD = d; near = n; }
+          });
+          hov = near ? near.id : null;
+        });
+
+        canvas.addEventListener('mouseleave', function () { hov = null; });
+      }
+    }());
+    </script>
   </section>
 
   <!-- ============ PRODUCTS ============ -->
