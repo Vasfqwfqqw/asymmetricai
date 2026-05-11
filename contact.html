@@ -83,6 +83,18 @@
       color: var(--muted);
       margin-top: 16px;
     }
+    .success-banner {
+      display: none;
+      background: rgba(245,158,11,0.12);
+      border: 1px solid rgba(245,158,11,0.4);
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin-bottom: 32px;
+      font-size: 15px;
+      color: var(--white);
+      line-height: 1.5;
+    }
+    .success-banner.visible { display: block; }
     .contact-aside {
       margin-top: 64px;
       padding-top: 40px;
@@ -156,6 +168,10 @@
       <span class="label">Get in touch</span>
       <h1 style="font-size:clamp(28px,4vw,44px);margin-bottom:12px;">Contact us</h1>
       <p class="lede" style="font-size:16px;max-width:520px;">Whether you have a question before buying, need help with a download, or want to discuss a bulk or team licence — send us a message and we will respond within one business day.</p>
+    </div>
+
+    <div class="success-banner" id="success-banner">
+      ✦ Thank you — your message has been sent. We will respond within one business day.
     </div>
 
     <form class="contact-form" action="https://api.web3forms.com/submit" method="POST">
@@ -236,5 +252,10 @@
   </footer>
 
   <script src="assets/main.js"></script>
+  <script>
+    if (window.location.search.indexOf('success=true') !== -1) {
+      document.getElementById('success-banner').classList.add('visible');
+    }
+  </script>
 </body>
 </html>
