@@ -105,8 +105,8 @@
         var W, H;
 
         function resize() {
-          W = canvas.parentElement.offsetWidth;
-          H = 480;
+          W = canvas.offsetWidth;
+          H = canvas.offsetHeight;
           canvas.width = W;
           canvas.height = H;
         }
